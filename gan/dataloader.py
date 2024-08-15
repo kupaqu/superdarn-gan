@@ -60,8 +60,8 @@ class DataLoader:
                 dataset_size += 1
                 x = np.concatenate(arrays, axis=1)
                 y = self.data[key]
-                print('dataset:', dataset_size, 'missed:', missed_size, end='\r')
-                print()
+                # print('dataset:', dataset_size, 'missed:', missed_size, end='\r')
+                # print()
                 yield np.concatenate([x[:,:,2:3], x[:,:,1:2]], axis=-1), y[:,:,2:3]*y[:,:,1:2]
 
     def __getSequence(self, key):
