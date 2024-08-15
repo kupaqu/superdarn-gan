@@ -31,7 +31,7 @@ class DataLoader:
         target_datetime = list(self.data.keys())
         if self.shuffle:
             random.shuffle(target_datetime)
-        print('Total files:', len(target_datetime))
+        # print('Total files:', len(target_datetime))
 
         dataset_size = 0
         missed_size = 0
