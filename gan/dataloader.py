@@ -11,9 +11,10 @@ import matplotlib.pyplot as plt
 
 from time import time
 from tqdm import tqdm
+from typing import List, Union
 
 class DataLoader:
-    def __init__(self, paths, shuffle=True, beam=6):
+    def __init__(self, paths: List[str], shuffle: bool = True, beam: Union[str, int] = 'all'):
         self.shuffle = shuffle
         self.data = {}
 
@@ -22,7 +23,7 @@ class DataLoader:
             for root, _, files in os.walk(path):
                 for name in files:
                     filename = name.split('.')
-                    if filename[4] == str(beam):
+                    if beam == 'all' or str(filename[4]) == str(beam):
                         key = (filename[0] + filename[1][:2], filename[4]) # ключ – кортеж вида (дата и час, луч)
                         arr = np.load(os.path.join(root, name))
                         self.data[key] = arr
