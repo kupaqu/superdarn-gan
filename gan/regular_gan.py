@@ -1,11 +1,18 @@
 import tensorflow as tf
 
 class GAN(tf.keras.Model):
-    def __init__(self, d, g):
+    def __init__(self, d=None, g=None):
         super(GAN, self).__init__()
 
-        self.d = d
-        self.g = g
+        if d is None:
+            self.d = self.get_discriminator()
+        else:
+            self.d = d
+
+        if g is None:
+            self.g = self.get_generator()
+        else:
+            self.g = g
 
         self.d_loss_tracker = tf.keras.metrics.Mean(name='d_loss')
         self.g_loss_tracker = tf.keras.metrics.Mean(name='g_loss')
@@ -96,3 +103,112 @@ class GAN(tf.keras.Model):
             "g_loss": self.g_loss_tracker.result(),
             "g_mae": self.g_mae_tracker.result()
         }
+    # генератор
+    def get_generator(self, regularizer_lambda=1e-5):
+    
+        # по каналу p_l
+        p_l_history = tf.keras.layers.Input(shape=(100, 1080, 1))
+    
+        p_l = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=5,
+            activation='relu',
+            padding='same',
+            kernel_regularizer=tf.keras.regularizers.L2(regularizer_lambda)
+        )(p_l_history)
+    
+        p_l = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=(1, 12),
+            dilation_rate=(1, 60),
+            activation='relu',
+            kernel_regularizer=tf.keras.regularizers.L2(regularizer_lambda)
+        )(p_l)
+    
+        p_l = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=5,
+            activation='relu',
+            padding='same',
+        )(p_l)
+    
+        x = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=(1, 7),
+            dilation_rate=(1, 60),
+            activation='relu',
+        )(p_l)
+    
+        x = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=5,
+            activation='relu',
+            padding='same',
+        )(x)
+    
+        output = tf.keras.layers.Conv2D(
+            filters=1,
+            kernel_size=1,
+            activation='linear'
+        )(x)
+    
+        generator = tf.keras.models.Model(p_l_history, output, name='generator')
+    
+        return generator
+    
+    # дискриминатор
+    def get_discriminator(self, regularizer_lambda=1e-5):
+    
+        # по каналу p_l
+        p_l_history = tf.keras.layers.Input(shape=(100, 1080, 1))
+        p_l_target = tf.keras.layers.Input(shape=(100, 60, 1))
+        p_l_concat = tf.keras.layers.Concatenate(axis=2)([p_l_history, p_l_target])
+    
+        p_l = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=5,
+            activation='relu',
+            padding='same',
+            kernel_regularizer=tf.keras.regularizers.L2(regularizer_lambda)
+        )(p_l_concat)
+    
+        p_l = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=(1, 13),
+            dilation_rate=(1, 60),
+            activation='relu',
+            kernel_regularizer=tf.keras.regularizers.L2(regularizer_lambda)
+        )(p_l)
+    
+        p_l = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=5,
+            activation='relu',
+            padding='same',
+        )(p_l)
+    
+        x = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=(1, 7),
+            dilation_rate=(1, 60),
+            activation='relu',
+        )(p_l)#(x)
+    
+        x = tf.keras.layers.Conv2D(
+            filters=32,
+            kernel_size=5,
+            activation='relu',
+            padding='same',
+        )(x)
+    
+        x = tf.keras.layers.Conv2D(
+            filters=1,
+            kernel_size=(100, 1),
+            activation='sigmoid'
+        )(x)
+    
+        output = tf.keras.layers.Flatten()(x)
+    
+        discriminator = tf.keras.models.Model([p_l_history, p_l_target], output, name='discriminator')
+    
+        return discriminator
