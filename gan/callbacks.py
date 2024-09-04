@@ -29,7 +29,7 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
     
     def _plot_predictions(self, plot_path, dataset, n_examples=7):
         numpy_iterator = dataset.as_numpy_iterator()
-        x, y = dataset.next()
+        x, y = numpy_iterator.next()
         x = x[:, :, :, 0:1] * x[:, :, :, 1:2] # канал p_l*qflg
 
         ### предсказания
