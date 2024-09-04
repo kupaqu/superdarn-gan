@@ -15,20 +15,22 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
         self.model.g.save(os.path.join(epoch_dir, f'g.keras'))
         self.model.d.save(os.path.join(epoch_dir, f'd.keras'))
         self._plot_predictions(
+            plot_path=os.path.join(epoch_dir, f'train_predictions.jpeg'),
+            dataset=self.training_data
+        self._plot_predictions(
             plot_path=os.path.join(epoch_dir, f'val_predictions.jpeg'),
             dataset=self.validation_data
         )
-        self._plot_predictions(
-            plot_path=os.path.join(epoch_dir, f'train_predictions.jpeg'),
-            dataset=self.training_data
         )
 
     def on_train_end(self, logs):
         self.on_epoch_end('end')
 
     def _plot_predictions(self, plot_path, dataset, n_examples=7):
-        x, y = dataset[0]
+        numpy_iterator = dataset.as_numpy_iterator()
+        x, y = numpy_iterator.next()
         x = x[:, :, :, 0:1] * x[:, :, :, 1:2] # канал p_l*qflg
+        dataset.repeat()
 
         ### предсказания
         fake_sample = self.model.g(x).numpy()
