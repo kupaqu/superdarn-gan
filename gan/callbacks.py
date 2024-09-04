@@ -27,6 +27,7 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
         self.on_epoch_end('end')
 
     def _plot_predictions(self, plot_path, dataset, n_examples=7):
+        dataset.repeat()
         numpy_iterator = dataset.as_numpy_iterator()
         x, y = numpy_iterator.next()
         x = x[:, :, :, 0:1] * x[:, :, :, 1:2] # канал p_l*qflg
