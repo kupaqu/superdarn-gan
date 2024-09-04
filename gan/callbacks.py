@@ -29,6 +29,7 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
         figure, axis = plt.subplots(2, n_examples)
 
         x, y = dataset[0]
+        print(x.shape, y.shape)
         x = x[:, :, :, 0:1] * x[:, :, :, 1:2] # канал p_l*qflg
 
         ### предсказания
