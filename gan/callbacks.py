@@ -3,9 +3,11 @@ import matplotlib.pyplot as plt
 import os
 
 class SaveCheckpoint(tf.keras.callbacks.Callback):
-    def __init__(self, dst_dir: str):
+    def __init__(self, dst_dir: str, training_data: tf.data.Dataset, validation_data: tf.data.Dataset):
         super().__init__()
         self.dst_dir = dst_dir
+        self.training_data = training_data
+        self.validation_data = validation_data
 
     def on_epoch_end(self, epoch, logs):
         epoch_dir = os.path.join(self.dst_dir, f'epoch_{epoch}')
@@ -26,10 +28,8 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
 
     
     def _plot_predictions(self, plot_path, dataset, n_examples=7):
-        figure, axis = plt.subplots(2, n_examples)
-
-        x, y = dataset[0]
-        print(x.shape, y.shape)
+        numpy_iterator = dataset.as_numpy_iterator()
+        x, y = dataset.next()
         x = x[:, :, :, 0:1] * x[:, :, :, 1:2] # канал p_l*qflg
 
         ### предсказания
@@ -37,6 +37,7 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
         fake_logits = self.model.d([x, fake_sample])
         real_logits = self.model.d([x, y])
 
+        figure, axis = plt.subplots(2, n_examples)
         for i in range(n_examples):
 
             axis[0, i].imshow(y[i, :, :, 0])
