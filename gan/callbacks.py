@@ -17,10 +17,10 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
         self._plot_predictions(
             plot_path=os.path.join(epoch_dir, f'train_predictions.jpeg'),
             dataset=self.training_data
+        )
         self._plot_predictions(
             plot_path=os.path.join(epoch_dir, f'val_predictions.jpeg'),
             dataset=self.validation_data
-        )
         )
 
     def on_train_end(self, logs):
