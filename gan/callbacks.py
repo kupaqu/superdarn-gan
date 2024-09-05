@@ -24,7 +24,7 @@ class SaveCheckpoint(tf.keras.callbacks.Callback):
         )
 
     def on_train_end(self, logs):
-        self.on_epoch_end('end')
+        self.on_epoch_end('end', logs)
 
     def _plot_predictions(self, plot_path, dataset, n_examples=7):
         numpy_iterator = dataset.as_numpy_iterator()
