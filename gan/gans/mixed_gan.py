@@ -43,17 +43,17 @@ class GAN(tf.keras.Model):
         return tf.math.multiply(x, f)
     
     @staticmethod
-    def mix(a, b):
-        if not a.shape == b.shape:
+    def mix(real_sample, fake_sample):
+        if not real_sample.shape == fake_sample.shape:
             raise ValueError('Shapes of tensors are different')
         
-        shape = tf.shape(a)
+        shape = tf.shape(real_sample)
         target = tf.math.round(
             tf.random.uniform(
                 shape=(shape[0], shape[2]),
                 minval=0,
                 maxval=1,
-                dtype=a.dtype
+                dtype=real_sample.dtype
             )
         )
 
@@ -63,8 +63,8 @@ class GAN(tf.keras.Model):
         inv_mask = tf.math.subtract(tf.ones_like(mask), mask)
 
         mixed = tf.math.add(
-            tf.math.multiply(a, mask),
-            tf.math.multiply(b, inv_mask)
+            tf.math.multiply(real_sample, mask),
+            tf.math.multiply(fake_sample, inv_mask)
         )
 
         return mixed, target
