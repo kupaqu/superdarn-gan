@@ -34,7 +34,7 @@ class GAN(tf.keras.Model):
         self.g_mae_fn = tf.keras.losses.MeanAbsoluteError()
     
     @staticmethod
-    def bernoulli_mask(x, p=0.8):
+    def bernoulli_mask(x, p=0.75):
         p = tf.constant([p])
         r = tf.random.uniform(shape=tf.shape(x), maxval=1)
         b = tf.math.greater(p, r)
@@ -74,8 +74,7 @@ class GAN(tf.keras.Model):
         x = x[:, :, :, 0:1] * x[:, :, :, 1:2] # канал p_l*qflg
 
         ### обучение дискриминатора
-        x = self.bernoulli_mask(x) # маска нужна для аугментации, т. к. мало данных
-        y = self.bernoulli_mask(y)
+        x = self.bernoulli_mask(x) # шум на входе
 
         fake_sample = self.g(x)
         mixed_sample, mixed_target = self.mix(y, fake_sample)
