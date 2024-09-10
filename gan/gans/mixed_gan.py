@@ -44,7 +44,7 @@ class GAN(tf.keras.Model):
     
     @staticmethod
     def mix(a, b):
-        if not tf.math.equal(tf.shape(a), tf.shape(b)):
+        if not a.shape == b.shape:
             raise ValueError('Shapes of tensors are different')
         
         shape = tf.shape(a)
