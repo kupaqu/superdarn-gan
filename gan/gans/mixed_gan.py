@@ -60,7 +60,10 @@ class GAN(tf.keras.Model):
         mask = tf.reshape(target, shape=(shape[0], 1, shape[2], 1))
         mask = tf.repeat(mask, repeats=shape[1], axis=1)
         mask = tf.repeat(mask, repeats=shape[3], axis=3)
-        inv_mask = tf.math.subtract(tf.ones_like(mask, dtype=fake_sample.dtype), mask)
+        inv_mask = tf.math.subtract(
+            tf.ones_like(mask, dtype=mask.dtype),
+            mask
+        )
 
         mixed = tf.math.add(
             tf.math.multiply(real_sample, mask),
