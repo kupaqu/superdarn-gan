@@ -46,6 +46,9 @@ class GAN(tf.keras.Model):
     def mix(real_sample, fake_sample):
         if not real_sample.shape == fake_sample.shape:
             raise ValueError('Shapes of tensors are different')
+
+        # real_sample = tf.cast(real_sample, dtype=tf.dtypes.float64)
+        fake_sample = tf.cast(fake_sample, dtype=real_sample.dtype)
         
         shape = tf.shape(real_sample)
         target = tf.math.round(
