@@ -58,11 +58,17 @@ class DataLoader:
                 missed_size += 1
                 continue
             else:
-                dataset_size += 1
                 x = np.concatenate(arrays, axis=1)
                 y = self.data[key]
                 # print('dataset:', dataset_size, 'missed:', missed_size, end='\r')
                 # print()
+
+                # если нулевых значений больше 90%, то пропускаем пример
+                if np.count_nonzero(y[:, :, 1] == 0) > y.shape[0]*y.shape[1]*0.9:
+                    missed_size += 1
+                    continue
+
+                dataset_size += 1
                 yield np.concatenate([x[:,:,2:3], x[:,:,1:2]], axis=-1), y[:,:,2:3]*y[:,:,1:2]
 
     def __getSequence(self, key):
