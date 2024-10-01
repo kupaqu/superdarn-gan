@@ -110,7 +110,7 @@ class GAN(tf.keras.Model):
 
             g_bce = self.loss_fn(tf.ones_like(fake_logits), fake_logits) # фейковые значения должны быть приняты дискриминатором за настоящие
             g_mse = self.g_mse_fn(y, fake_sample)
-            g_loss = g_bce + g_mse*1e-3
+            g_loss = g_bce + g_mse*1e-2
 
         grads = tape.gradient(g_loss, self.g.trainable_weights)
         self.g_opt.apply_gradients(zip(grads, self.g.trainable_weights))
