@@ -33,7 +33,7 @@ class GAN(tf.keras.Model):
         self.d_opt = d_opt
         self.g_opt = g_opt
         self.loss_fn = loss_fn
-        self.g_mse_fn = tf.keras.losses.MSE()
+        self.g_mse_fn = tf.keras.losses.MeanSquaredError()
     
     @staticmethod
     def bernoulli_mask(x, p=0.75):
