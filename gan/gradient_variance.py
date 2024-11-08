@@ -7,8 +7,8 @@ class GradientVariance(tf.keras.losses.Loss):
     patch_size : int, size of the patches extracted from the gt and predicted images
     reduction : str, how to reduce the loss (AUTO, NONE, SUM, SUM_OVER_BATCH_SIZE)
     """
-    def __init__(self, patch_size=8, reduction=tf.keras.losses.Reduction.AUTO):
-        super(GradientVariance, self).__init__(reduction=reduction)
+    def __init__(self, patch_size=8, reduction='sum_over_batch_size'):
+        super(GradientVariance, self).__init__(reduction=reduction, name='gradient_variance_loss')
         self.patch_size = patch_size
         # Sobel kernel for the gradient map calculation
         self.kernel_x = tf.constant([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=tf.float32)
