@@ -53,8 +53,8 @@ class GradientVariance(tf.keras.losses.Loss):
             var_output_y = tf.math.reduce_variance(gy_output_patches, axis=-1)
 
             # Loss function as a MSE between variances of patches extracted from gradient maps
-            gradvar_loss = tf.keras.losses.mean_squared_error(var_target_x, var_output_x) + \
-                           tf.keras.losses.mean_squared_error(var_target_y, var_output_y)
+            gradvar_loss = tf.reduce_mean(tf.square((var_target_x - var_output_x))) + \
+                           tf.reduce_mean(tf.square((var_target_y - var_output_y)))
 
             total_loss += gradvar_loss  # Accumulate loss for all channels
 
