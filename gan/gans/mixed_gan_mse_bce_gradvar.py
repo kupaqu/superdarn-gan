@@ -124,7 +124,7 @@ class GAN(tf.keras.Model):
         self.g_loss_tracker.update_state(g_loss)
         self.g_bce_tracker.update_state(g_bce)
         self.g_mse_tracker.update_state(g_mse)
-        self.g_gradvar_fn.update_state(g_gradvar)
+        self.g_gradvar_tracker.update_state(g_gradvar)
 
         return {
             "d_loss": self.d_loss_tracker.result(),
