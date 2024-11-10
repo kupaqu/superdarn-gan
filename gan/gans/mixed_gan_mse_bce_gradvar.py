@@ -114,7 +114,7 @@ class GAN(tf.keras.Model):
             g_bce = self.loss_fn(tf.ones_like(fake_logits), fake_logits) # фейковые значения должны быть приняты дискриминатором за настоящие
             g_mse = self.g_mse_fn(y, fake_sample)
             g_gradvar = self.g_gradvar_fn(y, fake_sample)
-            g_loss = g_bce + g_mse*1e-2 + 1e-6*g_gradvar
+            g_loss = g_bce + g_mse*1e-2 + 1e-8*g_gradvar
 
         grads = tape.gradient(g_loss, self.g.trainable_weights)
         self.g_opt.apply_gradients(zip(grads, self.g.trainable_weights))
@@ -152,7 +152,7 @@ class GAN(tf.keras.Model):
         g_bce = self.loss_fn(tf.ones_like(fake_logits), fake_logits) # фейковые значения должны быть приняты дискриминатором за настоящие
         g_mse = self.g_mse_fn(y, fake_sample)
         g_gradvar = self.g_gradvar_fn(y, fake_sample)
-        g_loss = g_bce + g_mse*1e-2 + 1e-6*g_gradvar
+        g_loss = g_bce + g_mse*1e-2 + 1e-8*g_gradvar
 
         ### обновляем трекеры
         self.d_loss_tracker.update_state(d_loss)
