@@ -17,16 +17,23 @@ class DataLoader:
     def __init__(self, paths: List[str], shuffle: bool = True, beam: Union[str, int] = 'all'):
         self.shuffle = shuffle
         self.data = {}
-
+        
         # загрузка всего датасета в память
         for path in paths:
             for root, _, files in os.walk(path):
-                for name in files:
+                missed = 0
+                for name in tqdm(files, desc=f'Loading in {root}'):
                     filename = name.split('.')
-                    if beam == 'all' or str(filename[4]) == str(beam):
+                    if beam == 'all' or str(filename[4]) == str(beam) or str(filename[5]) == str(beam):
                         key = (filename[0] + filename[1][:2], filename[4]) # ключ – кортеж вида (дата и час, луч)
-                        arr = np.load(os.path.join(root, name))
-                        self.data[key] = arr
+                        try:
+                            arr = np.load(os.path.join(root, name))
+                            self.data[key] = arr
+                        except:
+                            print(f'Error when loading {name}')
+                            missed += 1
+                            continue
+                print('Missed', missed, 'in', root)
 
     def __call__(self):
         target_datetime = list(self.data.keys())
